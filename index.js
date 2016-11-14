@@ -1,4 +1,7 @@
-var planets = [
+// Encapsulate to avoid polluting global namespace
+var AstroCalc = {}
+
+AstroCalc.planets = [
 	{planet: 'Sun', gravity: 27.9},
   	{planet: 'Mercury', gravity: 0.377},
 	{planet: 'Venus', gravity: 0.9032},
@@ -12,53 +15,46 @@ var planets = [
 	{planet: 'Pluto', gravity: 0.06}
 ];
 
-function roundToDecimal(num,dec) {
-      var rounded = (Math.round(num * Math.pow(10,dec)) / Math.pow(10,dec)).toFixed(dec);
-      return rounded;
-    }
-
-//options to select
-for(var i = 0; i < planets.length; i++) {
-	var planet = planets[i];
-
-	var optionElement = document.createElement('option');
-	optionElement.value = planet.gravity;
-	optionElement.innerHTML = planet.planet;
-
-	var selectElement = document.getElementById('selectPlanet');
-	selectElement.appendChild(optionElement);
+AstroCalc.roundToDecimal = function (num,dec) {
+      return (Math.round(num * Math.pow(10,dec)) / Math.pow(10,dec)).toFixed(dec);
 }
 
+//options to select
+AstroCalc.planets.forEach(function (planet) {
+	var optionElement = document.createElement('option');
+	optionElement.value = planet.gravity;
+	optionElement.appendChild(document.createTextNode(planet.planet));
+	
+	document.getElementById('selectPlanet').appendChild(optionElement)
+});
+
 //bind a function to the click event
-var form = document.getElementById('inputForm');
-
-
-form.onsubmit = function () {
-	var inputWeight = document.getElementById('inputWeight');
-
-	var weight = inputWeight.value;
-
+document.getElementById('inputForm').onsubmit = function (e) {
+	e.preventDefault();
+	
 	var selectElement = document.getElementById('selectPlanet');
-
-	var selectedIndex = selectElement.selectedIndex;
-
-	var selectedOption = selectElement.options[selectedIndex];
+	var selectedOption = selectElement.options[selectElement.selectedIndex];
 
 	var planetName = selectedOption.text;
-	var planetValue = selectedOption.value;
+	var planetGravity = selectedOption.value;
+	var inputWeight = document.getElementById('inputWeight').value;
+	var userWeightOnPlanet = inputWeight * planetGravity;
 
-	var userWeightOnPlanet = weight * planetValue;
-
+	var child;
 	if (isNaN(userWeightOnPlanet)) {
-		
-		var output = document.getElementById('output');
-		output.innerHTML = "<div class='animated shake errorMessage'>Please insert only numerical values into the box</div>";
-
+		child = document.createElement('div');
+		child.className = 'animated shake errorMessage'
+		child.appendChild(document.createTextNode('Please insert only numerical values into the box'));
 	} else {
-		var message = 'If you were on ' + planetName + ' you would weigh ' + roundToDecimal(userWeightOnPlanet, 2) + ' lbs.';
-		
-		var output = document.getElementById('output');
-		output.innerHTML = message;	
+		var message = 'If you were on ' + planetName + ' you would weigh ' + 
+		    AstroCalc.roundToDecimal(userWeightOnPlanet, 2) + ' lbs.';
+		child = document.createTextNode(message);
 	}
-	return false;
+	
+	var output = document.getElementById('output');
+	if ( output.childNodes[0] ) {
+		output.replaceChild(child, output.childNodes[0]);
+	} else {
+		output.appendChild(child);
+	}
 }
