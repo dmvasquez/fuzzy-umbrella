@@ -1,0 +1,45 @@
+.background {
+	background-image: url("ImagePlanets.jpg");
+}
+
+.white {
+	color: white;
+	text-align: center;
+	border-width: 10px;
+	border-color: blue;
+}
+
+.center {
+  position: fixed; /* or absolute */
+  top: 50%;
+  left: 50%;
+}
+
+.topPadding {
+	padding-top: 10em;
+}
+
+.divOpacity {
+	background: rgba(60, 60, 60, 0.4);
+}
+
+.opacity {
+	opacity: .9;
+}
+
+.bottomPadding {
+	padding-bottom: 10em;
+}
+
+.roundedCorners {
+	border-radius: 40px;
+}
+
+.margin {
+	margin: 2em;
+}
+
+.errorMessage {
+	color: red;
+	
+}
